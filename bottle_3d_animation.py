@@ -75,66 +75,10 @@ def create_bottle_3d(x_offset=0, y_offset=0, z_offset=0, color="#00d4ff", label=
     }
 
 
-def add_bottle_to_figure(fig, bottle_data, surface_color, liquid_color, opacity=0.8):
-    """Menambahkan botol ke figure Plotly"""
-    
-    # Tambah permukaan botol (bawah)
-    fig.add_trace(go.Surface(
-        x=bottle_data['x_bottom'],
-        y=bottle_data['y_bottom'],
-        z=bottle_data['z_bottom'],
-        colorscale=[[0, surface_color], [1, surface_color]],
-        showscale=False,
-        opacity=opacity,
-        name=f"{bottle_data['label']} (Body)",
-        hoverinfo='text',
-        text=f"<b>{bottle_data['label']}</b><br>Body"
-    ))
-    
-    # Tambah leher botol
-    fig.add_trace(go.Surface(
-        x=bottle_data['x_neck'],
-        y=bottle_data['y_neck'],
-        z=bottle_data['z_neck'],
-        colorscale=[[0, surface_color], [1, surface_color]],
-        showscale=False,
-        opacity=opacity,
-        name=f"{bottle_data['label']} (Neck)",
-        hoverinfo='text',
-        text=f"<b>{bottle_data['label']}</b><br>Neck"
-    ))
-    
-    # Tambah cap/tutup
-    fig.add_trace(go.Surface(
-        x=bottle_data['x_cap'],
-        y=bottle_data['y_cap'],
-        z=bottle_data['z_cap'],
-        colorscale=[[0, '#ff9500'], [1, '#ff6b00']],
-        showscale=False,
-        opacity=0.9,
-        name=f"{bottle_data['label']} (Cap)",
-        hoverinfo='text',
-        text=f"<b>{bottle_data['label']}</b><br>Cap"
-    ))
-    
-    # Tambah cairan di dalam
-    fig.add_trace(go.Surface(
-        x=bottle_data['x_liquid'],
-        y=bottle_data['y_liquid'],
-        z=bottle_data['z_liquid'],
-        colorscale=[[0, liquid_color], [1, liquid_color]],
-        showscale=False,
-        opacity=0.7,
-        name=f"{bottle_data['label']} (Liquid)",
-        hoverinfo='text',
-        text=f"<b>{bottle_data['label']}</b><br>Liquid Content"
-    ))
-
-
 def create_compatibility_animation_3d(chem1_name, chem1_category, chem2_name, chem2_category, 
                                       status, bottle1_color="#00d4ff", bottle2_color="#ff006e"):
     """
-    Membuat animasi 3D 2 botol bahan kimia yang saling didekatkan
+    Membuat animasi 3D 2 botol bahan kimia yang saling didekatkan dengan auto play
     
     Parameters:
     - chem1_name: nama bahan kimia 1
@@ -145,7 +89,7 @@ def create_compatibility_animation_3d(chem1_name, chem1_category, chem2_name, ch
     - bottle1_color: warna botol 1
     - bottle2_color: warna botol 2
     
-    Returns: Plotly figure dengan animasi 3D
+    Returns: Plotly figure dengan animasi 3D auto play
     """
     
     # Tentukan warna liquid berdasarkan kategori
@@ -160,20 +104,23 @@ def create_compatibility_animation_3d(chem1_name, chem1_category, chem2_name, ch
     liquid_color1 = liquid_colors.get(chem1_category, '#4499ff')
     liquid_color2 = liquid_colors.get(chem2_category, '#ff4499')
     
-    # Tentukan jumlah frame animasi
-    n_frames = 100
+    # Tentukan jumlah frame animasi - lebih banyak untuk smooth
+    n_frames = 150
     
     # Buat frame untuk animasi pergerakan botol
     frames = []
     
     for frame_num in range(n_frames):
-        # Hitung posisi botol berdasarkan progress animasi
-        t = frame_num / (n_frames - 1)  # 0 to 1
+        # Hitung posisi botol berdasarkan progress animasi (0 to 1)
+        t = frame_num / (n_frames - 1)
         
-        # Botol 1 bergerak dari kiri ke tengah
-        x1_pos = -3 + (3 * t)
-        # Botol 2 bergerak dari kanan ke tengah
-        x2_pos = 3 - (3 * t)
+        # Easing function untuk gerak lebih smooth (ease-in-out)
+        t_eased = t * t * (3.0 - 2.0 * t)
+        
+        # Botol 1 bergerak dari kiri (-4) ke tengah (0)
+        x1_pos = -4 + (4 * t_eased)
+        # Botol 2 bergerak dari kanan (4) ke tengah (0)
+        x2_pos = 4 - (4 * t_eased)
         
         # Buat botol untuk frame ini
         bottle1 = create_bottle_3d(x_offset=x1_pos, y_offset=0, z_offset=0, 
@@ -183,113 +130,124 @@ def create_compatibility_animation_3d(chem1_name, chem1_category, chem2_name, ch
         
         # Tentukan opacity liquid berdasarkan status
         if "AMAN" in status:
-            liquid_opacity1 = 0.5 + 0.3 * np.sin(t * np.pi)
-            liquid_opacity2 = 0.5 + 0.3 * np.sin(t * np.pi)
+            # Cahaya menenangkan, bergerak halus
+            liquid_opacity1 = 0.6 + 0.25 * np.sin(t * np.pi)
+            liquid_opacity2 = 0.6 + 0.25 * np.sin(t * np.pi)
         elif "BERBAHAYA" in status:
-            liquid_opacity1 = 0.7 + 0.2 * np.sin(t * np.pi * 2)  # Bergerak cepat
-            liquid_opacity2 = 0.7 + 0.2 * np.sin(t * np.pi * 2)
+            # Cahaya bergerak cepat (bahaya)
+            liquid_opacity1 = 0.7 + 0.25 * np.sin(t * np.pi * 3)
+            liquid_opacity2 = 0.7 + 0.25 * np.sin(t * np.pi * 3)
         else:  # PERHATIAN
-            liquid_opacity1 = 0.6 + 0.2 * np.sin(t * np.pi)
-            liquid_opacity2 = 0.6 + 0.2 * np.sin(t * np.pi)
+            # Cahaya medium
+            liquid_opacity1 = 0.65 + 0.2 * np.sin(t * np.pi * 2)
+            liquid_opacity2 = 0.65 + 0.2 * np.sin(t * np.pi * 2)
         
         # Buat data traces untuk frame
         frame_data = []
         
-        # Tambah botol 1
-        frame_data.extend([
-            go.Surface(
-                x=bottle1['x_bottom'],
-                y=bottle1['y_bottom'],
-                z=bottle1['z_bottom'],
-                colorscale=[[0, bottle1_color], [1, bottle1_color]],
-                showscale=False,
-                opacity=0.85,
-                name=f"{chem1_name} (Body)",
-                hoverinfo='text',
-                text=f"<b>{chem1_name}</b><br>Body"
-            ),
-            go.Surface(
-                x=bottle1['x_neck'],
-                y=bottle1['y_neck'],
-                z=bottle1['z_neck'],
-                colorscale=[[0, bottle1_color], [1, bottle1_color]],
-                showscale=False,
-                opacity=0.85,
-                name=f"{chem1_name} (Neck)",
-                hoverinfo='text',
-                text=f"<b>{chem1_name}</b><br>Neck"
-            ),
-            go.Surface(
-                x=bottle1['x_cap'],
-                y=bottle1['y_cap'],
-                z=bottle1['z_cap'],
-                colorscale=[[0, '#ff9500'], [1, '#ff6b00']],
-                showscale=False,
-                opacity=0.9,
-                name=f"{chem1_name} (Cap)",
-                hoverinfo='text',
-                text=f"<b>{chem1_name}</b><br>Cap"
-            ),
-            go.Surface(
-                x=bottle1['x_liquid'],
-                y=bottle1['y_liquid'],
-                z=bottle1['z_liquid'],
-                colorscale=[[0, liquid_color1], [1, liquid_color1]],
-                showscale=False,
-                opacity=liquid_opacity1,
-                name=f"{chem1_name} (Liquid)",
-                hoverinfo='text',
-                text=f"<b>{chem1_name}</b><br>Liquid"
-            )
-        ])
+        # Tambah botol 1 (Body)
+        frame_data.append(go.Surface(
+            x=bottle1['x_bottom'],
+            y=bottle1['y_bottom'],
+            z=bottle1['z_bottom'],
+            colorscale=[[0, bottle1_color], [1, bottle1_color]],
+            showscale=False,
+            opacity=0.85,
+            name=f"{chem1_name} (Body)",
+            hoverinfo='text',
+            text=f"<b>{chem1_name}</b><br>Body"
+        ))
         
-        # Tambah botol 2
-        frame_data.extend([
-            go.Surface(
-                x=bottle2['x_bottom'],
-                y=bottle2['y_bottom'],
-                z=bottle2['z_bottom'],
-                colorscale=[[0, bottle2_color], [1, bottle2_color]],
-                showscale=False,
-                opacity=0.85,
-                name=f"{chem2_name} (Body)",
-                hoverinfo='text',
-                text=f"<b>{chem2_name}</b><br>Body"
-            ),
-            go.Surface(
-                x=bottle2['x_neck'],
-                y=bottle2['y_neck'],
-                z=bottle2['z_neck'],
-                colorscale=[[0, bottle2_color], [1, bottle2_color]],
-                showscale=False,
-                opacity=0.85,
-                name=f"{chem2_name} (Neck)",
-                hoverinfo='text',
-                text=f"<b>{chem2_name}</b><br>Neck"
-            ),
-            go.Surface(
-                x=bottle2['x_cap'],
-                y=bottle2['y_cap'],
-                z=bottle2['z_cap'],
-                colorscale=[[0, '#ff9500'], [1, '#ff6b00']],
-                showscale=False,
-                opacity=0.9,
-                name=f"{chem2_name} (Cap)",
-                hoverinfo='text',
-                text=f"<b>{chem2_name}</b><br>Cap"
-            ),
-            go.Surface(
-                x=bottle2['x_liquid'],
-                y=bottle2['y_liquid'],
-                z=bottle2['z_liquid'],
-                colorscale=[[0, liquid_color2], [1, liquid_color2]],
-                showscale=False,
-                opacity=liquid_opacity2,
-                name=f"{chem2_name} (Liquid)",
-                hoverinfo='text',
-                text=f"<b>{chem2_name}</b><br>Liquid"
-            )
-        ])
+        # Tambah botol 1 (Neck)
+        frame_data.append(go.Surface(
+            x=bottle1['x_neck'],
+            y=bottle1['y_neck'],
+            z=bottle1['z_neck'],
+            colorscale=[[0, bottle1_color], [1, bottle1_color]],
+            showscale=False,
+            opacity=0.85,
+            name=f"{chem1_name} (Neck)",
+            hoverinfo='text',
+            text=f"<b>{chem1_name}</b><br>Neck"
+        ))
+        
+        # Tambah botol 1 (Cap)
+        frame_data.append(go.Surface(
+            x=bottle1['x_cap'],
+            y=bottle1['y_cap'],
+            z=bottle1['z_cap'],
+            colorscale=[[0, '#ff9500'], [1, '#ff6b00']],
+            showscale=False,
+            opacity=0.9,
+            name=f"{chem1_name} (Cap)",
+            hoverinfo='text',
+            text=f"<b>{chem1_name}</b><br>Cap"
+        ))
+        
+        # Tambah botol 1 (Liquid)
+        frame_data.append(go.Surface(
+            x=bottle1['x_liquid'],
+            y=bottle1['y_liquid'],
+            z=bottle1['z_liquid'],
+            colorscale=[[0, liquid_color1], [1, liquid_color1]],
+            showscale=False,
+            opacity=liquid_opacity1,
+            name=f"{chem1_name} (Liquid)",
+            hoverinfo='text',
+            text=f"<b>{chem1_name}</b><br>Liquid"
+        ))
+        
+        # Tambah botol 2 (Body)
+        frame_data.append(go.Surface(
+            x=bottle2['x_bottom'],
+            y=bottle2['y_bottom'],
+            z=bottle2['z_bottom'],
+            colorscale=[[0, bottle2_color], [1, bottle2_color]],
+            showscale=False,
+            opacity=0.85,
+            name=f"{chem2_name} (Body)",
+            hoverinfo='text',
+            text=f"<b>{chem2_name}</b><br>Body"
+        ))
+        
+        # Tambah botol 2 (Neck)
+        frame_data.append(go.Surface(
+            x=bottle2['x_neck'],
+            y=bottle2['y_neck'],
+            z=bottle2['z_neck'],
+            colorscale=[[0, bottle2_color], [1, bottle2_color]],
+            showscale=False,
+            opacity=0.85,
+            name=f"{chem2_name} (Neck)",
+            hoverinfo='text',
+            text=f"<b>{chem2_name}</b><br>Neck"
+        ))
+        
+        # Tambah botol 2 (Cap)
+        frame_data.append(go.Surface(
+            x=bottle2['x_cap'],
+            y=bottle2['y_cap'],
+            z=bottle2['z_cap'],
+            colorscale=[[0, '#ff9500'], [1, '#ff6b00']],
+            showscale=False,
+            opacity=0.9,
+            name=f"{chem2_name} (Cap)",
+            hoverinfo='text',
+            text=f"<b>{chem2_name}</b><br>Cap"
+        ))
+        
+        # Tambah botol 2 (Liquid)
+        frame_data.append(go.Surface(
+            x=bottle2['x_liquid'],
+            y=bottle2['y_liquid'],
+            z=bottle2['z_liquid'],
+            colorscale=[[0, liquid_color2], [1, liquid_color2]],
+            showscale=False,
+            opacity=liquid_opacity2,
+            name=f"{chem2_name} (Liquid)",
+            hoverinfo='text',
+            text=f"<b>{chem2_name}</b><br>Liquid"
+        ))
         
         frames.append(go.Frame(data=frame_data, name=str(frame_num)))
     
@@ -299,114 +257,113 @@ def create_compatibility_animation_3d(chem1_name, chem1_category, chem2_name, ch
         frames=frames
     )
     
-    # Setup layout dengan slider untuk kontrol animasi
-    sliders = [dict(
-        active=0,
-        yanchor="top",
-        y=0,
-        xanchor="left",
-        x=0.1,
-        len=0.8,
-        transition=dict(duration=50),
-        pad=dict(b=10, t=50),
-        currentvalue=dict(
-            prefix="Progress: ",
-            visible=True,
-            xanchor="right",
-            font=dict(size=16, color="#00d4ff")
-        ),
-        steps=[dict(
-            args=[[f.name], dict(
-                frame=dict(duration=50, redraw=True),
-                mode="immediate",
-                transition=dict(duration=50)
-            )],
-            method="animate",
-            label=str(i)
-        ) for i, f in enumerate(frames)]
-    )]
-    
     # Tentukan judul berdasarkan status
     title_color = "#00d97e" if "AMAN" in status else ("#ff006e" if "BERBAHAYA" in status else "#ffa500")
+    title_emoji = "✅" if "AMAN" in status else ("❌" if "BERBAHAYA" in status else "⚠️")
     
+    # Setup layout dengan animasi otomatis
     fig.update_layout(
         title=dict(
-            text=f"<b>🧪 3D Chemical Compatibility Animation</b><br><sub>{chem1_name} + {chem2_name}</sub>",
-            font=dict(size=20, color=title_color),
+            text=f"<b>{title_emoji} 3D Chemical Compatibility Animation</b><br><sub>{chem1_name} + {chem2_name} → {status}</sub>",
+            font=dict(size=22, color=title_color, family="Arial Black"),
             x=0.5,
-            xanchor='center'
+            xanchor='center',
+            y=0.98,
+            yanchor='top'
         ),
         scene=dict(
             xaxis=dict(
-                range=[-4, 4],
+                range=[-4.5, 4.5],
                 showgrid=True,
-                zeroline=True,
+                zeroline=False,
                 backgroundcolor="rgb(15, 15, 30)",
                 gridcolor="rgb(50, 50, 100)",
                 showbackground=True,
-                title=dict(text="Distance")
+                title=dict(text="", font=dict(size=10))
             ),
             yaxis=dict(
                 range=[-3, 3],
                 showgrid=True,
-                zeroline=True,
+                zeroline=False,
                 backgroundcolor="rgb(15, 15, 30)",
                 gridcolor="rgb(50, 50, 100)",
                 showbackground=True,
-                title=dict(text="Y Axis")
+                title=dict(text="", font=dict(size=10))
             ),
             zaxis=dict(
-                range=[-3, 2],
+                range=[-2.5, 2],
                 showgrid=True,
-                zeroline=True,
+                zeroline=False,
                 backgroundcolor="rgb(15, 15, 30)",
                 gridcolor="rgb(50, 50, 100)",
                 showbackground=True,
-                title=dict(text="Height")
+                title=dict(text="", font=dict(size=10))
             ),
             camera=dict(
                 eye=dict(x=1.5, y=1.5, z=1.3),
-                center=dict(x=0, y=0, z=0)
+                center=dict(x=0, y=0, z=-0.3)
             ),
             aspectmode='cube'
         ),
         paper_bgcolor='rgba(26, 26, 46, 0.95)',
         plot_bgcolor='rgba(26, 26, 46, 0.95)',
-        font=dict(color='#eaeaea', family='Arial', size=12),
-        height=700,
-        sliders=sliders,
+        font=dict(color='#eaeaea', family='Arial', size=11),
+        height=650,
+        width=None,
+        margin=dict(l=0, r=0, t=80, b=40),
+        showlegend=False,
+        hovermode='closest',
+        # Animasi otomatis langsung jalan
         updatemenus=[
             dict(
                 type="buttons",
                 direction="left",
                 buttons=[
-                    dict(label="▶ Play",
-                         method="animate",
-                         args=[None, dict(
-                             frame=dict(duration=50, redraw=True),
-                             fromcurrent=True,
-                             mode="immediate",
-                             transition=dict(duration=50)
-                         )]),
-                    dict(label="⏸ Pause",
-                         method="animate",
-                         args=[[None], dict(
-                             frame=dict(duration=0, redraw=False),
-                             mode="immediate",
-                             transition=dict(duration=0)
-                         )])
+                    dict(
+                        label="▶ Play",
+                        method="animate",
+                        args=[None, {
+                            "frame": {"duration": 30, "redraw": True},
+                            "fromcurrent": True,
+                            "mode": "immediate",
+                            "transition": {"duration": 20, "easing": "linear"}
+                        }]
+                    ),
+                    dict(
+                        label="⏸ Pause",
+                        method="animate",
+                        args=[[None], {
+                            "frame": {"duration": 0, "redraw": False},
+                            "mode": "immediate",
+                            "transition": {"duration": 0}
+                        }]
+                    ),
+                    dict(
+                        label="🔄 Reset",
+                        method="animate",
+                        args=[[frames[0].name], {
+                            "frame": {"duration": 0, "redraw": True},
+                            "mode": "immediate",
+                            "transition": {"duration": 0}
+                        }]
+                    )
                 ],
-                pad=dict(t=70),
+                pad=dict(r=10, t=10),
                 showactive=True,
-                x=0.1,
+                x=0.0,
                 xanchor="left",
                 y=1.15,
-                yanchor="top"
+                yanchor="top",
+                bgcolor="rgba(0, 212, 255, 0.1)",
+                bordercolor="#00d4ff",
+                borderwidth=1
             )
-        ],
-        showlegend=True,
-        hovermode='closest',
-        margin=dict(l=0, r=0, t=100, b=100)
+        ]
+    )
+    
+    # Tambahkan animasi otomatis saat figure dimuat
+    fig.update_layout(
+        # Konfigurasi untuk auto-play
     )
     
     return fig
