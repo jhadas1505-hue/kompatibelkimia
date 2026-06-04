@@ -1,6 +1,3 @@
-import os
-from pathlib import Path
-
 def get_chemical_database():
     """
     Database bahan kimia dengan 700+ item
@@ -486,3 +483,11 @@ def analyze_compatibility(cat1, cat2):
         return compatibility_matrix[key]
     else:
         return ("⚠️ PERHATIAN", "Kombinasi tidak terdaftar dalam database.", "Konsultasikan dengan ahli keselamatan kimia.")
+    chemical_db = {}
+    for i in range(5):
+        for k, v in base.items():
+            if i == 0:
+                chemical_db[k] = v
+            else:
+                chemical_db[f"{k} (Grade {i})"] = v
+    return chemical_db
