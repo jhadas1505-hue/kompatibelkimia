@@ -7,8 +7,8 @@ from database import get_chemical_database, get_ghs_images
 from analyzer import analyze_compatibility
 
 st.set_page_config(
-    page_title="FCOT Chemical System PRO",
-    page_icon="🧪",
+    page_title="CHECKCOMCHEMISTRY",
+    page_icon="🧪🧪",
     layout="wide",
     initial_sidebar_state="expanded"
 )
