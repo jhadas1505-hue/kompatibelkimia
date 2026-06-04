@@ -346,7 +346,11 @@ elif menu == "🔍 Cek Kompatibilitas":
         st.rerun()
     
     if reset_btn:
-        st.session_state.chem1 = list(chemical_db.keys())[0]
+        if chemical_db and len(chemical_db) > 0:
+            st.session_state.cheml = list(chemical_db.keys())[0]
+        else:
+            st.error("Database kimia kosong atau tidak tersedia")
+            st.stop()  # Hentikan eksekusi
         st.session_state.chem2 = list(chemical_db.keys())[1]
         st.rerun()
     
