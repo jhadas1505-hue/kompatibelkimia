@@ -8,7 +8,7 @@ from analyzer import analyze_compatibility
 
 st.set_page_config(
     page_title="FCOT Chemical System PRO",
-    page_icon="🧪",
+    page_icon="🧪me",
     layout="wide",
     initial_sidebar_state="expanded"
 )
