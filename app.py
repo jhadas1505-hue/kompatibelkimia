@@ -345,16 +345,15 @@ elif menu == "🔍 Cek Kompatibilitas":
         st.session_state.chem2 = chem1
         st.rerun()
     
-    if reset_btn:
-        if chemical_db and len(chemical_db) > 0:
-            if len(chemical_db) > 0:
-                st.session_state.cheml = list(chemical_db.keys())[0]
-            else:
-                st.error("Database kimia kosong atau tidak tersedia")
-                st.stop()
-        else:
-            st.error("Database kimia kosong atau tidak tersedia")
-            st.stop()  # Hentikan eksekusi
+if reset_btn:
+    # Validasi: minimal 2 item di database
+    if chemical_db and len(chemical_db) > 1:
+        st.session_state.chem1 = list(chemical_db.keys())[0]
+        st.session_state.chem2 = list(chemical_db.keys())[1]
+        st.rerun()
+    else:
+        st.error("Minimal 2 bahan kimia diperlukan di database")
+        st.stop()
        if len(chemical_db) > 1:
            st.session_state.chem2 = list(chemical_db.keys())[1]
        else:
