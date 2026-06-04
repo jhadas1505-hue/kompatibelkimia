@@ -354,12 +354,6 @@ if reset_btn:
     else:
         st.error("Minimal 2 bahan kimia diperlukan di database")
         st.stop()
-       if len(chemical_db) > 1:
-           st.session_state.chem2 = list(chemical_db.keys())[1]
-       else:
-           st.error("Minimal 2 bahan kimia diperlukan di database")
-           st.stop()
-        st.rerun()
     
     if clear_all:
         st.session_state.history = []
