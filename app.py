@@ -5,6 +5,7 @@ import plotly.express as px
 from datetime import datetime
 from database import get_chemical_database, get_ghs_images
 from analyzer import analyze_compatibility
+from bottle_3d_animation import create_compatibility_animation_3d
 
 st.set_page_config(
     page_title="FCOT Chemical System PRO",
@@ -270,7 +271,7 @@ if menu == "🏠 Home":
         <div class='metric-card'>
             <div style='font-size:40px;'>🔍</div>
             <div class='metric-label'>CEK KOMPATIBILITAS</div>
-            <p style='font-size:12px; color:#eaeaea;'>Analisis real-time dengan visualisasi 3D</p>
+            <p style='font-size:12px; color:#eaeaea;'>Analisis real-time dengan visualisasi 3D botol</p>
         </div>
         """, unsafe_allow_html=True)
     
@@ -299,7 +300,8 @@ if menu == "🏠 Home":
         st.markdown("""
         ### 🚀 Fitur Utama
         - Cek kompatibilitas 500+ bahan kimia
-        - Animasi 3D simbol bahaya GHS
+        - Animasi 3D botol bergerak saat pengecekan
+        - Visualisasi 3D simbol bahaya GHS
         - Rekomendasi penyimpanan otomatis
         - Dashboard analytics komprehensif
         - Export data mudah
@@ -378,8 +380,37 @@ elif menu == "🔍 Cek Kompatibilitas":
         
         st.markdown("---")
         
+        # ===== ANIMASI 3D BOTOL BAHAN KIMIA =====
+        st.markdown("<h3 class='section-title'>🎬 Animasi 3D Botol Penyimpan Bahan Kimia</h3>", unsafe_allow_html=True)
+        
+        # Tentukan warna botol berdasarkan kategori
+        bottle_colors = {
+            'Flammable': '#ff4444',
+            'Corrosive': '#ffaa00',
+            'Oxidizer': '#00aa00',
+            'Toxic': '#9900ff'
+        }
+        
+        bottle1_color = bottle_colors.get(t1, '#00d4ff')
+        bottle2_color = bottle_colors.get(t2, '#ff006e')
+        
+        # Buat animasi 3D
+        fig_animation = create_compatibility_animation_3d(
+            chem1_name=chem1,
+            chem1_category=t1,
+            chem2_name=chem2,
+            chem2_category=t2,
+            status=status,
+            bottle1_color=bottle1_color,
+            bottle2_color=bottle2_color
+        )
+        
+        st.plotly_chart(fig_animation, use_container_width=True, height=700)
+        
+        st.markdown("---")
+        
         # 3D GHS Symbol Animation
-        st.markdown("<h3 class='section-title'>🎯 Visualisasi Simbol Bahaya (3D)</h3>", unsafe_allow_html=True)
+        st.markdown("<h3 class='section-title'>🎯 Visualisasi Simbol Bahaya (2D)</h3>", unsafe_allow_html=True)
         
         col_ghs1, col_ghs2, col_ghs3 = st.columns(3)
         
@@ -577,6 +608,9 @@ elif menu == "📚 Panduan":
         
         **Q: Apakah bahan kategori sama selalu aman?**
         A: Tidak selalu. Kompatibilitas tergantung sifat kimia spesifik setiap bahan.
+        
+        **Q: Apa yang ditunjukkan animasi 3D botol?**
+        A: Animasi menunjukkan 2 botol bahan kimia yang didekatkan untuk mensimulasikan proses pengecekan kompatibilitas. Gerak cepat/lambat dan perubahan opacity cairan menunjukkan tingkat keamanan (Aman/Perhatian/Berbahaya).
         """)
 
 elif menu == "🧪 Database":
@@ -632,7 +666,8 @@ elif menu == "⚙️ Pengaturan":
         
         Aplikasi manajemen keamanan bahan kimia dengan fitur-fitur canggih:
         
-        - Analisis kompatibilitas 500+ bahan kimia
+        - Cek kompatibilitas 500+ bahan kimia
+        - Animasi 3D botol bergerak untuk visualisasi interaktif
         - Visualisasi 3D simbol bahaya GHS
         - Dashboard analytics komprehensif
         - Export/Import data lengkap
@@ -643,6 +678,7 @@ elif menu == "⚙️ Pengaturan":
         - Streamlit
         - Plotly
         - Pandas
+        - NumPy
         
         **Disclaimer:** Untuk operasi industri, konsultasi dengan ahli keselamatan profesional.
         """)
