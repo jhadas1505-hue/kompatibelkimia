@@ -1,9 +1,4 @@
 def get_chemical_database():
-    """
-    Database bahan kimia dengan 700+ item
-    Format: {"Nama Bahan": "Kategori"}
-    Kategori: F (Flammable), C (Corrosive), O (Oxidizer), T (Toxic)
-    """
     chemical_db = {
         # ===== FLAMMABLE (F) - 180+ items =====
         "Etanol": "F",
