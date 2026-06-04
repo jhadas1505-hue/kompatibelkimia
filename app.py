@@ -8,7 +8,7 @@ from analyzer import analyze_compatibility
 
 st.set_page_config(
     page_title="FCOT Chemical System PRO",
-    page_icon="🧪🧪",
+    page_icon="🧪",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -491,7 +491,7 @@ elif menu == "📊 Dashboard":
         st.info("📭 Belum ada data analisis. Mulai dengan melakukan pengecekan kompatibilitas!")
 
 elif menu == "❤️ Favorit":
-    st.markdown("<h2 class='section-title'>❤️ Favorit Analisis</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 class='section-title'>❤️ Favorit Analisis</h2>", safe_allow_html=True)
     
     if st.session_state.favorites:
         st.success(f"✅ Total {len(st.session_state.favorites)} favorit tersimpan")
