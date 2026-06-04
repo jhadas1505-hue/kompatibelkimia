@@ -330,31 +330,11 @@ elif menu == "🔍 Cek Kompatibilitas":
         st.markdown("**Bahan Kimia 2** 🧪")
         chem2 = st.selectbox("Pilih bahan kedua", list(chemical_db.keys()), key="chem2", label_visibility="collapsed")
     
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2 = st.columns(2)
     with col1:
         check_btn = st.button("✅ Cek Sekarang", use_container_width=True, key="check_btn")
     with col2:
-        swap_btn = st.button("🔄 Tukar Posisi", use_container_width=True, key="swap_btn")
-    with col3:
-        reset_btn = st.button("🗑️ Reset", use_container_width=True, key="reset_btn")
-    with col4:
         clear_all = st.button("🧹 Hapus Semua", use_container_width=True, key="clear_all_btn")
-    
-    # ---- SWAP BAHAN KIMIA ----
-    if swap_btn:
-        st.session_state.chem1 = chem2
-        st.session_state.chem2 = chem1
-        st.rerun()
-    
-    # ---- RESET BAHAN KIMIA ----
-    if reset_btn:
-        if chemical_db and len(chemical_db) > 1:
-            st.session_state.chem1 = list(chemical_db.keys())[0]
-            st.session_state.chem2 = list(chemical_db.keys())[1]
-            st.rerun()
-        else:
-            st.error("Minimal 2 bahan kimia diperlukan di database")
-            st.stop()
     
     # ---- CLEAR ALL HISTORY ----
     if clear_all:
