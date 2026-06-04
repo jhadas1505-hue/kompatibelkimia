@@ -340,26 +340,29 @@ elif menu == "🔍 Cek Kompatibilitas":
     with col4:
         clear_all = st.button("🧹 Hapus Semua", use_container_width=True, key="clear_all_btn")
     
+    # ---- SWAP BAHAN KIMIA ----
     if swap_btn:
         st.session_state.chem1 = chem2
         st.session_state.chem2 = chem1
         st.rerun()
     
-if reset_btn:
-    # Validasi: minimal 2 item di database
-    if chemical_db and len(chemical_db) > 1:
-        st.session_state.chem1 = list(chemical_db.keys())[0]
-        st.session_state.chem2 = list(chemical_db.keys())[1]
-        st.rerun()
-    else:
-        st.error("Minimal 2 bahan kimia diperlukan di database")
-        st.stop()
+    # ---- RESET BAHAN KIMIA ----
+    if reset_btn:
+        if chemical_db and len(chemical_db) > 1:
+            st.session_state.chem1 = list(chemical_db.keys())[0]
+            st.session_state.chem2 = list(chemical_db.keys())[1]
+            st.rerun()
+        else:
+            st.error("Minimal 2 bahan kimia diperlukan di database")
+            st.stop()
     
+    # ---- CLEAR ALL HISTORY ----
     if clear_all:
         st.session_state.history = []
         st.success("✅ Semua data riwayat dihapus!")
         st.rerun()
     
+    # ---- CHECK/ANALISIS ----
     if check_btn:
         with st.spinner("🔬 Menganalisis kombinasi bahan kimia..."):
             import time
