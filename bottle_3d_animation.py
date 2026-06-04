@@ -5,7 +5,6 @@ dengan efek interaktif dan reaksi kompatibilitas
 
 import plotly.graph_objects as go
 import numpy as np
-from plotly.subplots import make_subplots
 
 def create_bottle_3d(x_offset=0, y_offset=0, z_offset=0, color="#00d4ff", label="Bottle 1"):
     """
@@ -176,17 +175,11 @@ def create_compatibility_animation_3d(chem1_name, chem1_category, chem2_name, ch
         # Botol 2 bergerak dari kanan ke tengah
         x2_pos = 3 - (3 * t)
         
-        # Efek rotasi
-        rotation = t * 360
-        
         # Buat botol untuk frame ini
         bottle1 = create_bottle_3d(x_offset=x1_pos, y_offset=0, z_offset=0, 
                                    color=bottle1_color, label=chem1_name)
         bottle2 = create_bottle_3d(x_offset=x2_pos, y_offset=0, z_offset=0, 
                                    color=bottle2_color, label=chem2_name)
-        
-        # Buat figure untuk frame ini
-        fig_frame = go.Figure()
         
         # Tentukan opacity liquid berdasarkan status
         if "AMAN" in status:
@@ -199,26 +192,106 @@ def create_compatibility_animation_3d(chem1_name, chem1_category, chem2_name, ch
             liquid_opacity1 = 0.6 + 0.2 * np.sin(t * np.pi)
             liquid_opacity2 = 0.6 + 0.2 * np.sin(t * np.pi)
         
-        add_bottle_to_figure(fig_frame, bottle1, bottle1_color, liquid_color1, liquid_opacity1)
-        add_bottle_to_figure(fig_frame, bottle2, bottle2_color, liquid_color2, liquid_opacity2)
+        # Buat data traces untuk frame
+        frame_data = []
         
-        # Setup layout
-        fig_frame.update_layout(
-            scene=dict(
-                xaxis=dict(range=[-4, 4], showgrid=True, zeroline=True),
-                yaxis=dict(range=[-3, 3], showgrid=True, zeroline=True),
-                zaxis=dict(range=[-3, 2], showgrid=True, zeroline=True),
-                camera=dict(
-                    eye=dict(x=1.5, y=1.5, z=1.5),
-                    center=dict(x=0, y=0, z=0)
-                ),
-                aspectmode='cube'
+        # Tambah botol 1
+        frame_data.extend([
+            go.Surface(
+                x=bottle1['x_bottom'],
+                y=bottle1['y_bottom'],
+                z=bottle1['z_bottom'],
+                colorscale=[[0, bottle1_color], [1, bottle1_color]],
+                showscale=False,
+                opacity=0.85,
+                name=f"{chem1_name} (Body)",
+                hoverinfo='text',
+                text=f"<b>{chem1_name}</b><br>Body"
             ),
-            showlegend=False,
-            hovermode='closest'
-        )
+            go.Surface(
+                x=bottle1['x_neck'],
+                y=bottle1['y_neck'],
+                z=bottle1['z_neck'],
+                colorscale=[[0, bottle1_color], [1, bottle1_color]],
+                showscale=False,
+                opacity=0.85,
+                name=f"{chem1_name} (Neck)",
+                hoverinfo='text',
+                text=f"<b>{chem1_name}</b><br>Neck"
+            ),
+            go.Surface(
+                x=bottle1['x_cap'],
+                y=bottle1['y_cap'],
+                z=bottle1['z_cap'],
+                colorscale=[[0, '#ff9500'], [1, '#ff6b00']],
+                showscale=False,
+                opacity=0.9,
+                name=f"{chem1_name} (Cap)",
+                hoverinfo='text',
+                text=f"<b>{chem1_name}</b><br>Cap"
+            ),
+            go.Surface(
+                x=bottle1['x_liquid'],
+                y=bottle1['y_liquid'],
+                z=bottle1['z_liquid'],
+                colorscale=[[0, liquid_color1], [1, liquid_color1]],
+                showscale=False,
+                opacity=liquid_opacity1,
+                name=f"{chem1_name} (Liquid)",
+                hoverinfo='text',
+                text=f"<b>{chem1_name}</b><br>Liquid"
+            )
+        ])
         
-        frames.append(go.Frame(data=fig_frame.data))
+        # Tambah botol 2
+        frame_data.extend([
+            go.Surface(
+                x=bottle2['x_bottom'],
+                y=bottle2['y_bottom'],
+                z=bottle2['z_bottom'],
+                colorscale=[[0, bottle2_color], [1, bottle2_color]],
+                showscale=False,
+                opacity=0.85,
+                name=f"{chem2_name} (Body)",
+                hoverinfo='text',
+                text=f"<b>{chem2_name}</b><br>Body"
+            ),
+            go.Surface(
+                x=bottle2['x_neck'],
+                y=bottle2['y_neck'],
+                z=bottle2['z_neck'],
+                colorscale=[[0, bottle2_color], [1, bottle2_color]],
+                showscale=False,
+                opacity=0.85,
+                name=f"{chem2_name} (Neck)",
+                hoverinfo='text',
+                text=f"<b>{chem2_name}</b><br>Neck"
+            ),
+            go.Surface(
+                x=bottle2['x_cap'],
+                y=bottle2['y_cap'],
+                z=bottle2['z_cap'],
+                colorscale=[[0, '#ff9500'], [1, '#ff6b00']],
+                showscale=False,
+                opacity=0.9,
+                name=f"{chem2_name} (Cap)",
+                hoverinfo='text',
+                text=f"<b>{chem2_name}</b><br>Cap"
+            ),
+            go.Surface(
+                x=bottle2['x_liquid'],
+                y=bottle2['y_liquid'],
+                z=bottle2['z_liquid'],
+                colorscale=[[0, liquid_color2], [1, liquid_color2]],
+                showscale=False,
+                opacity=liquid_opacity2,
+                name=f"{chem2_name} (Liquid)",
+                hoverinfo='text',
+                text=f"<b>{chem2_name}</b><br>Liquid"
+            )
+        ])
+        
+        frames.append(go.Frame(data=frame_data, name=str(frame_num)))
     
     # Buat figure utama dengan frame pertama
     fig = go.Figure(
@@ -258,7 +331,7 @@ def create_compatibility_animation_3d(chem1_name, chem1_category, chem2_name, ch
     
     fig.update_layout(
         title=dict(
-            text=f"<b>3D Chemical Compatibility Animation</b><br><sub>{chem1_name} + {chem2_name} → {status}</sub>",
+            text=f"<b>🧪 3D Chemical Compatibility Animation</b><br><sub>{chem1_name} + {chem2_name}</sub>",
             font=dict(size=20, color=title_color),
             x=0.5,
             xanchor='center'
@@ -270,7 +343,8 @@ def create_compatibility_animation_3d(chem1_name, chem1_category, chem2_name, ch
                 zeroline=True,
                 backgroundcolor="rgb(15, 15, 30)",
                 gridcolor="rgb(50, 50, 100)",
-                showbackground=True
+                showbackground=True,
+                title=dict(text="Distance")
             ),
             yaxis=dict(
                 range=[-3, 3],
@@ -278,7 +352,8 @@ def create_compatibility_animation_3d(chem1_name, chem1_category, chem2_name, ch
                 zeroline=True,
                 backgroundcolor="rgb(15, 15, 30)",
                 gridcolor="rgb(50, 50, 100)",
-                showbackground=True
+                showbackground=True,
+                title=dict(text="Y Axis")
             ),
             zaxis=dict(
                 range=[-3, 2],
@@ -286,17 +361,18 @@ def create_compatibility_animation_3d(chem1_name, chem1_category, chem2_name, ch
                 zeroline=True,
                 backgroundcolor="rgb(15, 15, 30)",
                 gridcolor="rgb(50, 50, 100)",
-                showbackground=True
+                showbackground=True,
+                title=dict(text="Height")
             ),
             camera=dict(
-                eye=dict(x=1.5, y=1.5, z=1.5),
+                eye=dict(x=1.5, y=1.5, z=1.3),
                 center=dict(x=0, y=0, z=0)
             ),
             aspectmode='cube'
         ),
-        paper_bgcolor='rgba(26, 26, 46, 0.9)',
-        plot_bgcolor='rgba(26, 26, 46, 0.9)',
-        font=dict(color='#eaeaea', family='Arial'),
+        paper_bgcolor='rgba(26, 26, 46, 0.95)',
+        plot_bgcolor='rgba(26, 26, 46, 0.95)',
+        font=dict(color='#eaeaea', family='Arial', size=12),
         height=700,
         sliders=sliders,
         updatemenus=[
@@ -328,53 +404,9 @@ def create_compatibility_animation_3d(chem1_name, chem1_category, chem2_name, ch
                 yanchor="top"
             )
         ],
-        showlegend=False,
-        hovermode='closest'
+        showlegend=True,
+        hovermode='closest',
+        margin=dict(l=0, r=0, t=100, b=100)
     )
     
     return fig
-
-
-def create_reaction_indicator(status):
-    """
-    Membuat indikator reaksi visual berdasarkan status kompatibilitas
-    """
-    
-    if "AMAN" in status:
-        color = "#00d97e"
-        emoji = "✅"
-        message = "AMAN - Kedua bahan dapat disimpan berdekatan"
-    elif "BERBAHAYA" in status:
-        color = "#ff006e"
-        emoji = "❌"
-        message = "BERBAHAYA - Kedua bahan TIDAK boleh berdekatan"
-    else:
-        color = "#ffa500"
-        emoji = "⚠️"
-        message = "PERHATIAN - Perlu perlakuan khusus"
-    
-    html = f"""
-    <div style='
-        background: linear-gradient(135deg, {color}40 0%, {color}20 100%);
-        border: 3px solid {color};
-        border-radius: 15px;
-        padding: 20px;
-        text-align: center;
-        font-size: 24px;
-        font-weight: bold;
-        color: {color};
-        margin: 20px 0;
-        animation: pulse 2s infinite;
-    '>
-        <div style='font-size: 40px; margin-bottom: 10px;'>{emoji}</div>
-        <div>{message}</div>
-    </div>
-    <style>
-        @keyframes pulse {{
-            0%, 100% {{ opacity: 1; }}
-            50% {{ opacity: 0.8; }}
-        }}
-    </style>
-    """
-    
-    return html
