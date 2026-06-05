@@ -420,10 +420,11 @@ def get_chemical_database():
     return chemical_db
 
 def get_ghs_images():
+    # Menggunakan link lengkap berformat .png langsung dari internet
     return {
-        "Flammable": "https://share.google/69Pdfz5c4smW6XtNd",
-        "Corrosive": "https://share.google/7gR6w6EI0SDOHO9ef",
-        "Oxidizer": "https://share.google/l1nVIzr8a1NKR4OP9",
-        "Toxic": "https://share.google/kIjCPSnkgAOLvqPOb",
-        "Safe": "https://share.google/3IY3MNYzjcY8QGoYY"
+        "Flammable": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/GHS-pictogram-flamme.svg/600px-GHS-pictogram-flamme.svg.png",
+        "Corrosive": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/GHS-pictogram-acid.svg/600px-GHS-pictogram-acid.svg.png",
+        "Oxidizer": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/GHS-pictogram-rondflam.svg/600px-GHS-pictogram-rondflam.svg.png",
+        "Toxic": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/GHS-pictogram-skull.svg/600px-GHS-pictogram-skull.svg.png",
+        "Safe": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Warning_sign.svg/320px-Warning_sign.svg.png"
     }
