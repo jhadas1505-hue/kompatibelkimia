@@ -242,8 +242,8 @@ if "favorites" not in st.session_state:
 st.sidebar.markdown("""
 <div style='text-align:center; padding:20px 0;'>
     <h1 style='font-size:40px; margin:0;'>🧪</h1>
-    <h2 style='font-size:20px; margin:5px 0; color:#00d4ff;'>FCOT PRO</h2>
-    <p style='font-size:12px; color:#ffa500;'>Chemical Safety System v3.0</p>
+    <h2 style='font-size:20px; margin:5px 0; color:#00d4ff;'>Checkcomchemistry</h2>
+    <p style='font-size:12px; color:#ffa500;'>Politeknik AKA Bogor</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -259,7 +259,7 @@ if menu == "🏠 Home":
     
     st.markdown("""
     <div class='info-box'>
-        <h3 style='color:#00d4ff;'>🎯 Selamat Datang di FCOT Chemical System PRO v3.0</h3>
+        <h3 style='color:#00d4ff;'>🎯 Selamat Datang di Checkcomchemistry</h3>
         <p>Sistem manajemen keamanan bahan kimia dengan visualisasi 3D GHS yang canggih, database 500+ bahan kimia, dan analisis real-time.</p>
     </div>
     """, unsafe_allow_html=True)
