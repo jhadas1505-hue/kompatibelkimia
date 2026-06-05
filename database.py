@@ -421,9 +421,9 @@ def get_chemical_database():
 
 def get_ghs_images():
     return {
-        "Flammable": "https://upload.wikimedia.org/wikipedia/commons/6/6c/GHS-pictogram-flamme.svg",
-        "Corrosive": "https://upload.wikimedia.org/wikipedia/commons/5/5a/GHS-pictogram-acid.svg",
-        "Oxidizer": "https://upload.wikimedia.org/wikipedia/commons/1/1c/GHS-pictogram-rondflam.svg",
-        "Toxic": "https://upload.wikimedia.org/wikipedia/commons/3/3b/GHS-pictogram-skull.svg",
-        "Safe": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Warning_sign.svg/320px-Warning_sign.svg.png"
+        "Flammable": "https://share.google/69Pdfz5c4smW6XtNd",
+        "Corrosive": "https://share.google/7gR6w6EI0SDOHO9ef",
+        "Oxidizer": "https://share.google/l1nVIzr8a1NKR4OP9",
+        "Toxic": "https://share.google/kIjCPSnkgAOLvqPOb",
+        "Safe": "https://share.google/3IY3MNYzjcY8QGoYY"
     }
