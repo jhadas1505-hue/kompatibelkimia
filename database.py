@@ -420,47 +420,10 @@ def get_chemical_database():
     return chemical_db
 
 def get_ghs_images():
-    # 1. Deteksi otomatis lokasi folder proyek Anda berada
-    base_path = os.path.dirname(__file__) if "__file__" in locals() else os.getcwd()
-    assets_dir = os.path.join(base_path, "assets")
-    
-    # 2. Definisikan dictionary berisi path lengkap ke file lokal Anda
     return {
-        "Flammable": os.path.join(assets_dir, "flammable.png"),
-        "Corrosive": os.path.join(assets_dir, "corrosive.png"),
-        "Oxidizer": os.path.join(assets_dir, "oxidizer.png"),
-        "Toxic": os.path.join(assets_dir, "toxic.png"),
-        "Safe": os.path.join(assets_dir, "safe.png")
+        "Flammable": "https://upload.wikimedia.org/wikipedia/commons/6/6c/GHS-pictogram-flamme.svg",
+        "Corrosive": "https://upload.wikimedia.org/wikipedia/commons/5/5a/GHS-pictogram-acid.svg",
+        "Oxidizer": "https://upload.wikimedia.org/wikipedia/commons/1/1c/GHS-pictogram-rondflam.svg",
+        "Toxic": "https://upload.wikimedia.org/wikipedia/commons/3/3b/GHS-pictogram-skull.svg",
+        "Safe": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Warning_sign.svg/320px-Warning_sign.svg.png"
     }
-
-# --- CARA MENAMPILKANNYA DI DALAM APLIKASI ---
-
-def tampilkan_simbol(kategori_bahaya):
-    """
-    Fungsi ini digunakan untuk mengambil gambar dari lokal device 
-    dan menampilkannya ke layar aplikasi.
-    """
-    daftar_gambar = get_ghs_images()
-    path_gambar = daftar_gambar.get(kategori_bahaya)
-    
-    # Periksa apakah file gambarnya beneran ada di folder komputer Anda
-    if path_gambar and os.path.exists(path_gambar):
-        # Membuka file gambar lokal menggunakan PIL
-        img = Image.open(path_gambar)
-        
-        # JIKA ANDA MENGGUNAKAN STREAMLIT:
-        # st.image(img, caption=kategori_bahaya, width=100)
-        
-        # JIKA ANDA MENGGUNAKAN TKINTER / CUSTOMTKINTER:
-        # dari customtkinter import CTkImage
-        # return CTkImage(light_image=img, dark_image=img, size=(100, 100))
-        
-        print(r"✅ Gambar berhasil dimuat dari device:")
-        print(path_gambar)
-        return img
-    else:
-        print(f"❌ Error: File gambar untuk '{kategori_bahaya}' tidak ditemukan di folder assets!")
-        return None
-
-# Contoh pemanggilan untuk mengetes di terminal:
-# tampilkan_simbol("Corrosive")
