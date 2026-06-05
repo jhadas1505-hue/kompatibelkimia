@@ -255,7 +255,7 @@ menu = st.sidebar.radio(
 )
 
 if menu == "🏠 Home":
-    st.markdown("<div class='main-title'>🧪 CHECKCOM CHEMICAL ANALYSIS</div>", unsafe_allow_html=True)
+    st.markdown("<div class='main-title'>🧪 CHECKCOMCHEMISTRY</div>", unsafe_allow_html=True)
     
     st.markdown("""
     <div class='info-box'>
