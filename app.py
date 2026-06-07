@@ -480,12 +480,10 @@ elif menu == "🔍 Cek Kompatibilitas":
         st.session_state.last_favorite = favorite_data
         col1, col2 = st.columns(2)
         with col1:
-        
-        if st.button("❤️ Tambah ke Favorit"):
-            
-            favorite_data = st.session_state.get("last_favorite") 
-            
-            if favorite_data:
+         if st.button("❤️ Tambah ke Favorit"):
+             favorite_data = st.session_state.get("last_favorite") 
+             
+             if favorite_data:
                 
                 is_duplicate = any(
                     fav["chem1"] == favorite_data["chem1"]
