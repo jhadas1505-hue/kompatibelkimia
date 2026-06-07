@@ -393,11 +393,19 @@ elif menu == "🔍 Cek Kompatibilitas":
         col1, col2 = st.columns(2)
         
         with col1:
-            st.markdown("<div class='chemical-card'>", unsafe_allow_html=True)
-            st.image(
-                ghs_images.get(t1),
-                width=120
-            )
+            st.markdown("<div class='chemical-card'>", unsafe_allow_html=True
+                       
+        import os
+        
+        image_path = ghs_images.get(t1)
+        
+        st.write("Path:", image_path)
+        st.write("Ada file:", os.path.exists(image_path))
+        
+        if os.path.exists(image_path):
+            st.image(image_path, width=120)
+        else:
+            st.error(f"File tidak ditemukan: {image_path}")
             st.markdown(f"""
             <div class='chemical-name'>{chem1}</div>
             <div class='chemical-category'>{t1}</div>
