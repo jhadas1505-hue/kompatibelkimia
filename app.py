@@ -480,23 +480,28 @@ elif menu == "🔍 Cek Kompatibilitas":
         st.session_state.last_favorite = favorite_data
         col1, col2 = st.columns(2)
         with col1:
-            if st.button("❤️ Tambah ke Favorit"):
-                favorite_data = st.session_state.get("last_favorite") 
+            if st.button("❤️ Tambah ke Favorit", key="fav_btn"):
+                
+                favorite_data = st.session_state.get("last_favorite")
                 
                 if favorite_data:
-                  is_duplicate = any(
-                    fav["chem1"] == favorite_data["chem1"]
-                    and fav["chem2"] == favorite_data["chem2"]
-                    for fav in st.session_state.favorites
-                )
+                    
+                    is_duplicate = any(
+                        fav["chem1"] == favorite_data["chem1"]
+                        and fav["chem2"] == favorite_data["chem2"]
+                        for fav in st.session_state.favorite
+                    )
+                    
+                    if not is_duplicate:
+                        st.session_state.favorites.append(favorite_data)
+                        st.success("✅ Ditambahkan ke favorit!")
+                        st.rerun()
+                    
+                    else:
+                        st.warning("⚠️ Sudah ada di favorit")
                 
-                if not is_duplicate:
-                    st.session_state.favorites.append(favorite_data)
-                    st.write(st.session_state.favorites)
-                    st.success("✅ Ditambahkan ke favorit!")
                 else:
-                    st.warning("⚠️ Sudah ada di favorit")
-                    st.rerun()
+                    st.error("Lakukan analisis terlebih dahulu!")
         
         with col2:
             if st.button("📋 Copy Hasil"):
