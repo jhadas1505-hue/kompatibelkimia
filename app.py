@@ -351,10 +351,6 @@ elif menu == "🔍 Cek Kompatibilitas":
     chemical_db = get_chemical_database()
     ghs_images = get_ghs_images()
     
-    import os
-    st.write("Path gambar:", ghs_images.get("Corrosive"))
-    st.write("File ditemukan:", os.path.exists(ghs_images.get("Corrosive")))
-    
     col1, col2 = st.columns(2)
     with col1:
         st.markdown("**Bahan Kimia 1** 🧪")
@@ -394,29 +390,16 @@ elif menu == "🔍 Cek Kompatibilitas":
         
         with col1:
             st.markdown("<div class='chemical-card'>", unsafe_allow_html=True)
-                       
-        import os
-        
-        image_path = ghs_images.get(t1)
-        
-        st.write("Path:", image_path)
-        st.write("Ada file:", os.path.exists(image_path))
-        
-        if os.path.exists(image_path):
-            st.image(image_path, width=120)
-        else:
-            st.error(f"File tidak ditemukan: {image_path}")
+            st.image(ghs_images.get(t1, ""), width=100, use_column_width=True)
             st.markdown(f"""
             <div class='chemical-name'>{chem1}</div>
             <div class='chemical-category'>{t1}</div>
             """, unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
+        
         with col2:
             st.markdown("<div class='chemical-card'>", unsafe_allow_html=True)
-            st.image(
-                ghs_images.get(t2),
-                width=120
-            )
+            st.image(ghs_images.get(t2, ""), width=100, use_column_width=True)
             st.markdown(f"""
             <div class='chemical-name'>{chem2}</div>
             <div class='chemical-category'>{t2}</div>
@@ -477,31 +460,21 @@ elif menu == "🔍 Cek Kompatibilitas":
             "penyimpanan": penyimpanan,
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         }
-        st.session_state.last_favorite = favorite_data
+        
         col1, col2 = st.columns(2)
         with col1:
-            if st.button("❤️ Tambah ke Favorit", key="fav_btn"):
-                
-                favorite_data = st.session_state.get("last_favorite")
-                
-                if favorite_data:
-                    
-                    is_duplicate = any(
-                        fav["chem1"] == favorite_data["chem1"]
-                        and fav["chem2"] == favorite_data["chem2"]
-                        for fav in st.session_state.favorite
-                    )
-                    
-                    if not is_duplicate:
-                        st.session_state.favorites.append(favorite_data)
-                        st.success("✅ Ditambahkan ke favorit!")
-                        st.rerun()
-                    
-                    else:
-                        st.warning("⚠️ Sudah ada di favorit")
-                
+            if st.button("❤️ Tambah ke Favorit"):
+                # Cek duplikasi
+                is_duplicate = any(
+                    fav["chem1"] == chem1 and fav["chem2"] == chem2 
+                    for fav in st.session_state.favorites
+                )
+                if not is_duplicate:
+                    st.session_state.favorites.append(favorite_data)
+                    st.success("✅ Ditambahkan ke favorit!")
+                    st.rerun()
                 else:
-                    st.error("Lakukan analisis terlebih dahulu!")
+                    st.warning("⚠️ Kombinasi ini sudah ada di favorit!")
         
         with col2:
             if st.button("📋 Copy Hasil"):
