@@ -351,6 +351,10 @@ elif menu == "🔍 Cek Kompatibilitas":
     chemical_db = get_chemical_database()
     ghs_images = get_ghs_images()
     
+    import os
+    st.write("Path gambar:", ghs_images.get("Corrosive"))
+    st.write("File ditemukan:", os.path.exists(ghs_images.get("Corrosive")))
+    
     col1, col2 = st.columns(2)
     with col1:
         st.markdown("**Bahan Kimia 1** 🧪")
@@ -390,7 +394,10 @@ elif menu == "🔍 Cek Kompatibilitas":
         
         with col1:
             st.markdown("<div class='chemical-card'>", unsafe_allow_html=True)
-            st.image(ghs_images.get(t1, ""), width=100, use_column_width=True)
+            st.image(
+                ghs_images.get(t1),
+                width=120
+            )
             st.markdown(f"""
             <div class='chemical-name'>{chem1}</div>
             <div class='chemical-category'>{t1}</div>
@@ -399,7 +406,10 @@ elif menu == "🔍 Cek Kompatibilitas":
         
         with col2:
             st.markdown("<div class='chemical-card'>", unsafe_allow_html=True)
-            st.image(ghs_images.get(t2, ""), width=100, use_column_width=True)
+            st.imaage(
+                ghs_images.get(t2),
+                width=120
+            )
             st.markdown(f"""
             <div class='chemical-name'>{chem2}</div>
             <div class='chemical-category'>{t2}</div>
