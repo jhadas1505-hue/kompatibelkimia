@@ -421,9 +421,9 @@ def get_chemical_database():
 
 def get_ghs_images():
     return {
-        "Flammable": "images/flammable.png",
-        "Corrosive": "images/corrosive.png",
-        "Oxidizer": "images/oxidizer.png",
-        "Toxic": "images/toxic.png",
-        "Safe": "images/safe.png"
+        "Flammable": "images/flammable.jpg",
+        "Corrosive": "images/corrosive.jpog",
+        "Oxidizer": "images/oxidizer.jpg",
+        "Toxic": "images/toxic.jpg",
+        "Safe": "images/safe.jpg"
     }
