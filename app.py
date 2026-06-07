@@ -413,7 +413,7 @@ elif menu == "🔍 Cek Kompatibilitas":
             st.markdown("</div>", unsafe_allow_html=True)
         with col2:
             st.markdown("<div class='chemical-card'>", unsafe_allow_html=True)
-            st.imaage(
+            st.image(
                 ghs_images.get(t2),
                 width=120
             )
