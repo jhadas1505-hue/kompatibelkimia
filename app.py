@@ -411,7 +411,7 @@ elif menu == "🔍 Cek Kompatibilitas":
             <div class='chemical-category'>{t1}</div>
             """, unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
-        
+            )
         with col2:
             st.markdown("<div class='chemical-card'>", unsafe_allow_html=True)
             st.imaage(
