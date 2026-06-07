@@ -393,7 +393,7 @@ elif menu == "🔍 Cek Kompatibilitas":
         col1, col2 = st.columns(2)
         
         with col1:
-            st.markdown("<div class='chemical-card'>", unsafe_allow_html=True
+            st.markdown("<div class='chemical-card'>", unsafe_allow_html=True)
                        
         import os
         
